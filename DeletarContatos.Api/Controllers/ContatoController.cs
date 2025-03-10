@@ -25,18 +25,18 @@ namespace DeletarContatos.Api.Controllers
         }
 
         /// <summary>
-        /// Atualiza um contato existente.
+        /// Exclui um contato pelo id.
         /// </summary>
-        /// <param name="contato">Os dados do contato a ser atualizado.</param>
-        [HttpPut]
+        /// <param name="id">O id do contato a ser excluído.</param>
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerResponse(400, "Erro de validação", typeof(ExceptionResponse), "application/json")]
         [SwaggerResponse(404, "Erro de validação", typeof(ExceptionResponse), "application/json")]
-        public async Task<IActionResult> PutContato(ContatoRequest contato)
+        public async Task<IActionResult> DeleteContato(int id)
         {
-            await contatoService.AtualizarContato(contato);
+            await contatoService.ExcluirContato(id);
             return Accepted();
         }
     }

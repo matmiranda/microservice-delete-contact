@@ -1,7 +1,5 @@
 ﻿using DeletarContatos.Domain.Models.RabbitMq;
-using DeletarContatos.Domain.Requests;
 using DeletarContatos.Infrastructure.Exceptions;
-using DeletarContatos.Service.Mapper;
 using DeletarContatos.Service.RabbitMq;
 using System.Net;
 
@@ -16,20 +14,12 @@ namespace DeletarContatos.Service.Contato
             _rabbitMqPublisherService = rabbitMqPublisherService;
         }
 
-        public async Task AtualizarContato(ContatoRequest contato)
+        public async Task ExcluirContato(int id)
         {
-            //await ValidaIdContato(contato.Id);
-
-            //var contatoExistente = await _contatosRepository.ObterContatoPorId(contato.Id);
-            //var regiao = contatoExistente?.DDD == contato.DDD
-            //             ? contatoExistente.Regiao
-            //             : ObtemRegiaoPorDDD(contato.DDD);
-
-
-            ContactMessage contactMessage = ContatoMapper.ToContactMessage(contato, "regiao");
+            //await ValidaIdContato(id);
 
             // Enviar para a fila do RabbitMQ
-            await _rabbitMqPublisherService.PublicarContatoAsync(contactMessage);
+            await _rabbitMqPublisherService.PublicarContatoAsync(new ContactMessage { Id = id });
         }
 
         public static string ObtemRegiaoPorDDD(int DDD)
