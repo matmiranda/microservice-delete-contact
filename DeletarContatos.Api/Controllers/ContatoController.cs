@@ -1,5 +1,4 @@
-﻿using DeletarContatos.Domain.Requests;
-using DeletarContatos.Domain.Responses;
+﻿using DeletarContatos.Domain.Responses;
 using DeletarContatos.Service.Contato;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
