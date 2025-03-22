@@ -1,22 +1,32 @@
 ﻿using DeletarContatos.Domain.Models.RabbitMq;
+using DeletarContatos.Domain.Responses;
 using DeletarContatos.Infrastructure.Exceptions;
 using DeletarContatos.Service.RabbitMq;
+using Microsoft.Extensions.Configuration;
 using System.Net;
+using System.Text.Json;
 
 namespace DeletarContatos.Service.Contato
 {
     public class ContatoService : IContatoService
     {
         private readonly IRabbitMqPublisherService _rabbitMqPublisherService;
+        private readonly HttpClient _httpClient;
+        private readonly string _key;
 
-        public ContatoService(IRabbitMqPublisherService rabbitMqPublisherService)
+        public ContatoService(IRabbitMqPublisherService rabbitMqPublisherService, HttpClient httpClient, IConfiguration configuration)
         {
             _rabbitMqPublisherService = rabbitMqPublisherService;
+            _httpClient = httpClient;
+            _key = configuration["ApiAzure:Key"] ?? throw new CustomException(HttpStatusCode.InternalServerError, "ApiAzure:Key configuration is missing.");
         }
 
         public async Task ExcluirContato(int id)
         {
-            //await ValidaIdContato(id);
+            var contatoId = await ConsultaContatoPorId(id);
+
+            if (contatoId == null)
+                throw new CustomException(HttpStatusCode.NotFound, $"O id do contato não existe.");
 
             // Enviar para a fila do RabbitMQ
             await _rabbitMqPublisherService.PublicarContatoAsync(new ContactMessage { Id = id });
@@ -38,6 +48,19 @@ namespace DeletarContatos.Service.Contato
                 throw new CustomException(HttpStatusCode.BadRequest, $"Região NÃO ENCONTRADA para o DDD: {DDD}");
 
             return regiao;
+        }
+
+        public async Task<ContatoIdResponse?> ConsultaContatoPorId(int id)
+        {
+            string url = $"https://fiap-api-gateway.azure-api.net/contato/{id}";
+            _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _key);
+            HttpResponseMessage response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+                return JsonSerializer.Deserialize<ContatoIdResponse>(await response.Content.ReadAsStringAsync());
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+                return null;
+            else
+                throw new CustomException(HttpStatusCode.InternalServerError, $"Algo deu errado ao consultar Api Azure");
         }
     }
 }
