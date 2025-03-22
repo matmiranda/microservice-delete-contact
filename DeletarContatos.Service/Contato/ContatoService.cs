@@ -29,7 +29,7 @@ namespace DeletarContatos.Service.Contato
                 throw new CustomException(HttpStatusCode.NotFound, $"O id do contato não existe.");
 
             // Enviar para a fila do RabbitMQ
-            await _rabbitMqPublisherService.PublicarContatoAsync(new ContactMessage { Id = id });
+            _ = _rabbitMqPublisherService.PublicarContatoAsync(new ContactMessage { Id = id });
         }
 
         public static string ObtemRegiaoPorDDD(int DDD)
