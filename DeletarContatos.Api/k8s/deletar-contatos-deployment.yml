@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deletar-contatos-deployment
+  labels:
+    app: deletar-contatos
+    tier: backend
+    environment: production
+  annotations:
+    description: "Microsserviço responsável por criar contatos"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: deletar-contatos
+  template:
+    metadata:
+      labels:
+        app: deletar-contatos
+        tier: backend
+        environment: production
+      annotations:
+        description: "Pod do microsserviço deletar-contatos"
+    spec:
+      containers:
+        - name: deletar-contatos
+          image: containerfiap.azurecr.io/deletar-contatos:latest
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: deletar-contatos-configmap
+          volumeMounts:
+            - name: deletar-contatos-volume
+              mountPath: /app/logs/deletar-contatos
+      imagePullSecrets:
+        - name: acr-auth
+      volumes:
+        - name: deletar-contatos-volume
+          persistentVolumeClaim:
+            claimName: deletar-contatos-persistent-volume-claim

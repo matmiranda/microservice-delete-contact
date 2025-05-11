@@ -4,6 +4,13 @@ using DeletarContatos.Service.Contato;
 using Prometheus;
 using DeletarContatos.Infrastructure.MassTransit;
 using DeletarContatos.Service.RabbitMq;
+using Serilog;
+
+// grava logs em um arquivo no kubernete k8s azure
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("/app/logs/deletar-contatos/log.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 

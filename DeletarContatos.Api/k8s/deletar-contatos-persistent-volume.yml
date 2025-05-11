@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: deletar-contatos-persistent-volume
+  labels:
+    app: deletar-contatos
+    tier: backend
+  annotations:
+    description: "Volume persistente para dados do microsserviço deletar-contatos"
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: default
+  hostPath:
+    path: /data/deletar-contatos/logs
