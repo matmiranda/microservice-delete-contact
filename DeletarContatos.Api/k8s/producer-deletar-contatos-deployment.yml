@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producer-deletar-contatos-deployment
+  labels:
+    app: producer-deletar-contatos
+    tier: backend
+    environment: production
+  annotations:
+    description: "Microsserviço responsável por criar contatos"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: producer-deletar-contatos
+  template:
+    metadata:
+      labels:
+        app: producer-deletar-contatos
+        tier: backend
+        environment: production
+      annotations:
+        description: "Pod do microsserviço producer-deletar-contatos"
+    spec:
+      containers:
+        - name: producer-deletar-contatos
+          image: containerfiap.azurecr.io/producer-deletar-contatos:latest
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: producer-deletar-contatos-configmap
+          volumeMounts:
+            - name: producer-deletar-contatos-volume
+              mountPath: /app/logs/producer/producer-deletar-contatos
+      imagePullSecrets:
+        - name: acr-auth
+      volumes:
+        - name: producer-deletar-contatos-volume
+          persistentVolumeClaim:
+            claimName: producer-deletar-contatos-persistent-volume-claim

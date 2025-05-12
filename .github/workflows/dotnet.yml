@@ -114,11 +114,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/deletar-contatos:latest -f DeletarContatos.Api/Dockerfile .
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/producer-deletar-contatos:latest -f DeletarContatos.Api/Dockerfile .
 
       - name: Push Docker image to ACR
         run: |
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/deletar-contatos:latest
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/producer-deletar-contatos:latest
 
       - name: Set AKS context
         uses: azure/aks-set-context@v3
@@ -129,29 +129,29 @@ jobs:
       - name: Update Kubernetes Resources
         run: |
           # Aplica ConfigMap (cria ou atualiza se necessário)
-          kubectl apply -f DeletarContatos.Api/k8s/deletar-contatos-configmap.yml
+          kubectl apply -f DeletarContatos.Api/k8s/producer-deletar-contatos-configmap.yml
 
           # Aplica Deployment (cria ou atualiza se necessário)
-          kubectl apply -f DeletarContatos.Api/k8s/deletar-contatos-deployment.yml
+          kubectl apply -f DeletarContatos.Api/k8s/producer-deletar-contatos-deployment.yml
 
           # Aplica PVC e PV (apenas cria ou atualiza, sem deletar)
-          kubectl apply -f DeletarContatos.Api/k8s/deletar-contatos-persistent-volume.yml
-          kubectl apply -f DeletarContatos.Api/k8s/deletar-contatos-persistent-volume-claim.yml
+          kubectl apply -f DeletarContatos.Api/k8s/producer-deletar-contatos-persistent-volume.yml
+          kubectl apply -f DeletarContatos.Api/k8s/producer-deletar-contatos-persistent-volume-claim.yml
 
           # Aplica Service (cria ou atualiza se necessário)
-          kubectl apply -f DeletarContatos.Api/k8s/deletar-contatos-service.yml
+          kubectl apply -f DeletarContatos.Api/k8s/producer-deletar-contatos-service.yml
 
           # Espera o rollout do Deployment para garantir que a atualização foi bem-sucedida
-          kubectl rollout status deployment/deletar-contatos-deployment
+          kubectl rollout status deployment/producer-deletar-contatos-deployment
       
       - name: Update AKS Deployment with new image
         uses: azure/k8s-deploy@v1
         with:
           manifests: |
-            DeletarContatos.Api/k8s/deletar-contatos-deployment.yml
-            DeletarContatos.Api/k8s/deletar-contatos-service.yml
+            DeletarContatos.Api/k8s/producer-deletar-contatos-deployment.yml
+            DeletarContatos.Api/k8s/producer-deletar-contatos-service.yml
           images: |
-            ${{ secrets.ACR_LOGIN_SERVER }}/deletar-contatos:latest
+            ${{ secrets.ACR_LOGIN_SERVER }}/producer-deletar-contatos:latest
           imagepullsecrets: |
             acr-auth
 
