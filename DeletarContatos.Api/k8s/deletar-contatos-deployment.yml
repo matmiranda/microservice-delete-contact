@@ -32,7 +32,7 @@ spec:
                 name: deletar-contatos-configmap
           volumeMounts:
             - name: deletar-contatos-volume
-              mountPath: /app/logs/deletar-contatos
+              mountPath: /app/logs/producer/deletar-contatos
       imagePullSecrets:
         - name: acr-auth
       volumes:

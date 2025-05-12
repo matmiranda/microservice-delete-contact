@@ -15,4 +15,4 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: default
   hostPath:
-    path: /data/deletar-contatos/logs
+    path: /data/deletar-contatos/logs/producer
