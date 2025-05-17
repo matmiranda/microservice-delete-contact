@@ -14,3 +14,18 @@ spec:
             name: producer-deletar-contatos-service
             port:
               number: 80
+      - path: /deletar/contato/health
+        pathType: Prefix
+        backend:
+          service:
+            name: producer-deletar-contatos-service
+            port:
+              number: 80
+      - path: /deletar/contato/swagger
+        pathType: Prefix
+        backend:
+          service:
+            name: producer-deletar-contatos-service
+            port:
+              number: 80
+
