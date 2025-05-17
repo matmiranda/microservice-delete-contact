@@ -33,6 +33,20 @@ spec:
           volumeMounts:
             - name: producer-deletar-contatos-volume
               mountPath: /app/logs/producer/producer-deletar-contatos
+          # readinessProbe:
+          #   httpGet:
+          #     path: /deletar/contato/health
+          #     port: 80
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 10
+          #   failureThreshold: 3
+          # livenessProbe:
+          #   httpGet:
+          #     path: /deletar/contato/health
+          #     port: 80
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 20
+          #   failureThreshold: 3
       imagePullSecrets:
         - name: acr-auth
       volumes:
