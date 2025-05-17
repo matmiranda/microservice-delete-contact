@@ -140,6 +140,9 @@ jobs:
 
           # Aplica Service (cria ou atualiza se necessário)
           kubectl apply -f DeletarContatos.Api/k8s/producer-deletar-contatos-service.yml
+          
+          # Aplica o Ingress (cria ou atualiza o roteamento externo)
+          kubectl apply -f DeletarContatos.Api/k8s/producer-deletar-contatos-ingress.yml
 
           # Espera o rollout do Deployment para garantir que a atualização foi bem-sucedida
           kubectl rollout status deployment/producer-deletar-contatos-deployment
